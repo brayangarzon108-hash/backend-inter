@@ -1,4 +1,5 @@
-﻿using TestInterRapidisimo.Domain.Model.Response;
+﻿using TCI.API.Domain.Class.ActivosO.Activos;
+using TestInterRapidisimo.Domain.Model.Response;
 
 namespace TCI.API.DataAccess.DataAccess.CRUD.Procesos.NroSolicitudDato
 {
@@ -8,6 +9,7 @@ namespace TCI.API.DataAccess.DataAccess.CRUD.Procesos.NroSolicitudDato
         Task<string> CreateAsync(CreateStudentResponse dto);
         Task<string> UpdateAsync(int studentId, UpdateStudentResponse dto);
         Task<string> DeleteAsync(int studentId);
-        Task<List<StudentListResponse>> GetAllAsync(int studentId);
+        Task<HeadStudentListResponse> GetAllAsync(int page, int pageSize, string search);
+        Task<List<ProgramDto>> GetAllProgramationAsync();
     }
 }

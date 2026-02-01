@@ -1,5 +1,6 @@
 ﻿using TCI.API.Domain.Response.Sistema;
 using TestInterRapidisimo.Domain.Model.Response;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace TCI.API.DataAccess.DataAccess.CRUD.Procesos.NroSolicitudDato
 {
@@ -111,25 +112,45 @@ namespace TCI.API.DataAccess.DataAccess.CRUD.Procesos.NroSolicitudDato
         /// <param name="studentId"></param>
         /// <returns> List<ReportesClass> </returns>
         #region  Consultar Alumnos
-        public async Task<GeneralResponse> GetAllAsync(int studentId)
+        public async Task<GeneralResponse> GetAllAsync(int page, int pageSize, string search)
         {
             GeneralResponse generalResponse = new GeneralResponse();
 
             // Grupo de Reportes
-            var data = await _repo.GetAllAsync(studentId);
+            var data = await _repo.GetAllAsync(page, pageSize, search);
 
-            if (data.Count > 0)
+            if (data.CountRegister > 0)
+            {              
+                generalResponse.Data = data;
+            }
+            else
             {
-                var result = data
-                   .Select(s => new StudentListResponse
-                   {
-                       StudentId = s.StudentId,
-                       FullName = s.FullName,
-                       Email = s.Email,
-                       ProgramName = s.ProgramName
-                   })
-                    .ToList();
-                generalResponse.Data = result;
+                return generalResponse = new GeneralResponse
+                {
+                    Status = (int)Enumerations.enumTypeMessageResponse.NotFound,
+                    Message = "No se encontro data con los filtro seleccionados."
+                };
+            }
+            return generalResponse;
+        }
+        #endregion
+
+        /// <summary>
+        ///  Consulto Programas
+        /// </summary>
+        /// <param name="studentId"></param>
+        /// <returns> List<ReportesClass> </returns>
+        #region  Consultar Programas
+        public async Task<GeneralResponse> GetAllProgramationAsync()
+        {
+            GeneralResponse generalResponse = new GeneralResponse();
+
+            // Grupo de Reportes
+            var data = await _repo.GetAllProgramationAsync();
+
+            if (data.Count() > 0)
+            {
+                generalResponse.Data = data;
             }
             else
             {

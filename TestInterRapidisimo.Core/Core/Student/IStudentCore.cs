@@ -32,6 +32,12 @@ namespace TCI.API.DataAccess.DataAccess.CRUD.Procesos.NroSolicitudDato
         /// </summary>
         /// <param name="studentId"></param>
         /// <returns> List<ReportesClass> </returns>
-        Task<GeneralResponse> GetAllAsync(int studentId);
+        Task<GeneralResponse> GetAllAsync(int page, int pageSize, string search);
+
+        /// <summary>
+        ///  Consulto Programas
+        /// </summary>
+        /// <returns> List<ReportesClass> </returns>
+        Task<GeneralResponse> GetAllProgramationAsync();
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Console.Migration.Context;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
+using System.Reflection.PortableExecutable;
 using TCI.API.Domain.Class.ActivosO.Activos;
 using TestInterRapidisimo.Domain.Model.Response;
 
@@ -44,7 +45,7 @@ namespace TCI.API.DataAccess.DataAccess.CRUD.Procesos.NroSolicitudDato
         {
             var student = await _context.Students.FindAsync(studentId);
             if (student == null)
-               return "Estudiante no encontrado.";
+                return "Estudiante no encontrado.";
 
             // Programa válido
             if (!await _context.Programs.AnyAsync(p => p.ProgramId == dto.ProgramId))
@@ -61,32 +62,66 @@ namespace TCI.API.DataAccess.DataAccess.CRUD.Procesos.NroSolicitudDato
         {
             var student = await _context.Students.FindAsync(studentId);
             if (student == null)
-               return "Estudiante no encontrado.";
+                return "Estudiante no encontrado.";
 
             _context.Students.Remove(student);
             await _context.SaveChangesAsync();
             return "Exito";
         }
 
-        public async Task<List<StudentListResponse>> GetAllAsync(int studentId)
+        public async Task<HeadStudentListResponse> GetAllAsync(int page, int pageSize, string search)
         {
+            var header = new HeadStudentListResponse();
+
             var data = _context.Students
                 .Include(s => s.Program).AsAsyncEnumerable();
 
-            if (studentId > 0)
+            if (!string.IsNullOrEmpty(search))
             {
-                data = data.Where(s => s.StudentId == studentId);
+                data = data.Where(s => s.FullName.Contains(search));
             }
 
-            return await data
-            .Select(s => new StudentListResponse
+            var infocount = await data.CountAsync();
+            // Pagination
+            if ((page == 0 && pageSize == 0) || page * pageSize >= infocount)
+            {
+                //Console.WriteLine("Número de página fuera de rango.");
+            }
+            else
+            {
+                // Pagination
+                var formListresult = data.Skip(page * pageSize).Take(pageSize);
+
+                header.CountRegister = infocount;
+                header.InfomationProcess = await formListresult.Select(s => new StudentListResponse
+                {
+                    StudentId = s.StudentId,
+                    FullName = s.FullName,
+                    Email = s.Email,
+                    ProgramId = s.ProgramId,
+                    ProgramName = s.Program.Name
+                })
+                .ToListAsync();
+                return header;
+            }
+
+            header.CountRegister = infocount;
+            header.InfomationProcess = await data.Select(s => new StudentListResponse
             {
                 StudentId = s.StudentId,
                 FullName = s.FullName,
                 Email = s.Email,
+                ProgramId = s.ProgramId,
                 ProgramName = s.Program.Name
             })
             .ToListAsync();
+            return header;
+        }
+
+        public async Task<List<ProgramDto>> GetAllProgramationAsync()
+        {
+            var data = await _context.Programs.ToListAsync();
+            return data;
         }
     }
 }
