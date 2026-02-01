@@ -12,5 +12,13 @@ namespace TCI.API.DataAccess.DataAccess.CRUD.Procesos.NroSolicitudDato
         /// <param name="info"></param>
         /// <returns> List<ReportesClass> </returns>
         Task<GeneralResponse> InsertAlumnSubject(StudentSubjectResponse info);
+
+        /// <summary>
+        ///  Consulto Materia
+        /// </summary>
+        /// <returns> List<ReportesClass> </returns>
+        Task<GeneralResponse> GetAllSubjectAsync();
+        Task<GeneralResponse> DeleteAsync(int studentId);
+        Task<GeneralResponse> GetAllAsync(int studentid);
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.Data;
 using TCI.API.Domain.Class.ActivosO.Activos;
+using TestInterRapidisimo.Domain.Model.Response;
 
 namespace TCI.API.DataAccess.DataAccess.CRUD.Procesos.NroSolicitudDato
 {
@@ -16,8 +17,19 @@ namespace TCI.API.DataAccess.DataAccess.CRUD.Procesos.NroSolicitudDato
             _context = context;
         }
 
+        public async Task<List<SubjectResponse>> GetAllSubjectAsync()
+        {
+            var data = await _context.Subjects.Include(x => x.Professor).Select(x => new SubjectResponse
+            {
+                SubjectId = x.SubjectId,
+                NameSubject = x.Name,
+                Teacher = x.Professor.FullName
+            }).ToListAsync();
+            return data;
+        }
+
         /// <summary>
-        /// Método que registra la inscripción de un estudiante a una materia
+        /// Método que consulta la inscripción de un estudiante a una materia
         /// </summary>
         /// <returns></returns>
         public async Task<string> EnrollSubjectAsync(int studentId, int subjectId)
@@ -37,7 +49,7 @@ namespace TCI.API.DataAccess.DataAccess.CRUD.Procesos.NroSolicitudDato
                 .FirstOrDefaultAsync(s => s.SubjectId == subjectId);
 
             if (subject == null)
-                return  "La materia no existe.";
+                return "La materia no existe.";
 
             //  Máximo 3 materias por estudiante
             if (student.StudentSubjects.Count >= 3)
@@ -72,6 +84,43 @@ namespace TCI.API.DataAccess.DataAccess.CRUD.Procesos.NroSolicitudDato
             _context.StudentSubjects.Add(studentSubject);
             await _context.SaveChangesAsync();
             return "Exito";
-        }       
+        }
+
+        /// <summary>
+        /// Método que consulta los estudiante que comparten materias con un estudiante.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<ListStudentSubjectResponse>> GetStudentClassmatesAsync(int studentId)
+        {
+            // Validar estudiante
+            var exists = await _context.Students.AnyAsync(s => s.StudentId == studentId);
+            if (!exists)
+                throw new Exception("El estudiante no existe.");
+
+            var result = await _context.StudentSubjects
+                .Where(ss => ss.StudentId == studentId)
+                .Select(ss => new ListStudentSubjectResponse
+                {
+                    StudentSubjectId = ss.StudentSubjectId,
+                    SubjectId = ss.Subject.SubjectId,
+                    NameSubjectId = ss.Subject.Name,
+                    StudentId = ss.Student.StudentId,
+                    NameStudentId = ss.Student.FullName,
+                })
+                .ToListAsync();
+
+            return result;
+        }
+
+        public async Task<string> DeleteAsync(int studentSubjectId)
+        {
+            var student = await _context.StudentSubjects.FindAsync(studentSubjectId);
+            if (student == null)
+                return "Estudiante no encontrado.";
+
+            _context.StudentSubjects.Remove(student);
+            await _context.SaveChangesAsync();
+            return "Exito";
+        }
     }
 }

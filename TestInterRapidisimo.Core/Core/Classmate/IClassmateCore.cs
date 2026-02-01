@@ -10,6 +10,6 @@ namespace TCI.API.DataAccess.DataAccess.CRUD.Procesos.NroSolicitudDato
         /// </summary>
         /// <param name="grupo"></param>
         /// <returns> List<ReportesClass> </returns>
-        Task<GeneralResponse> GetClassmatesAsync(int studentId);
+        Task<GeneralResponse> GetClassmatesAsync(int studentId, int page, int pageSize, int subjectId, string nameStudent = "");
     }
 }

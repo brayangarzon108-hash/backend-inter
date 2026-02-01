@@ -21,29 +21,18 @@ namespace TCI.API.DataAccess.DataAccess.CRUD.Procesos.NroSolicitudDato
         /// <param name="grupo"></param>
         /// <returns> List<ReportesClass> </returns>
         #region  Consultar Grupo Alumnos
-        public async Task<GeneralResponse> GetClassmatesAsync(int studentId)
+        public async Task<GeneralResponse> GetClassmatesAsync(int studentId, int page, int pageSize, int subjectId, string nameStudent = "")
         {
             GeneralResponse generalResponse = new GeneralResponse();
-
-            // List Devolver
-            List<ClassmatesResponse> dataList = new List<ClassmatesResponse>();
 
             // Grupo de Reportes
             if (studentId > 0)
             {
-                var data = await _repo.GetClassmatesAsync(studentId);
+                var data = await _repo.GetClassmatesAsync(studentId, page, pageSize, subjectId, nameStudent);
 
-                if (data.Count > 0)
+                if (data.CountRegister > 0)
                 {
-                    var result = data
-                       .Select(ss => new ClassmatesResponse
-                       {
-                           SubjectId = ss.SubjectId,
-                           SubjectName = ss.SubjectName,
-                           Classmates = ss.Classmates
-                       })
-                        .ToList();
-                    generalResponse.Data = dataList;
+                    generalResponse.Data = data;
                 }
                 else
                 {

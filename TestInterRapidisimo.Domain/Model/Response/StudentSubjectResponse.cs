@@ -3,6 +3,15 @@
     public class StudentSubjectResponse
     {
         public int SubjectId { get; set; }
-        public int AlumnId { get; set; }
+        public int StudentId { get; set; }
+    }
+
+    public class ListStudentSubjectResponse
+    {
+        public int StudentSubjectId { get; set; }
+        public int SubjectId { get; set; }
+        public string? NameSubjectId { get; set; }
+        public int StudentId { get; set; }
+        public string? NameStudentId { get; set; }
     }
 }

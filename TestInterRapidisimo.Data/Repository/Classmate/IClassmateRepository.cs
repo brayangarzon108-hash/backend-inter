@@ -10,6 +10,6 @@ namespace TCI.API.DataAccess.DataAccess.CRUD.Procesos.NroSolicitudDato
         /// Método que consulta los estudiante que comparten materias con un estudiante.
         /// </summary>
         /// <returns></returns>
-        Task<List<ClassmatesResponse>> GetClassmatesAsync(int studentId);
+        Task<HeadStudentListResponse> GetClassmatesAsync(int studentId, int page, int pageSize, int subjectId, string nameStudent = "");
     }
 }

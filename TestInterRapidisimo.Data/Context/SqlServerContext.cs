@@ -66,7 +66,7 @@ namespace Console.Migration.Context
             modelBuilder.Entity<StudentSubjectDto>(
                b =>
                {
-                   b.HasKey(e => new { e.StudentId, e.SubjectId });
+                   b.HasKey(e => new { e.StudentSubjectId });
                });
         }    
     }
