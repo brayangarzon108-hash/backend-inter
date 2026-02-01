@@ -23,7 +23,8 @@ namespace TCI.API.DataAccess.DataAccess.CRUD.Procesos.NroSolicitudDato
             {
                 SubjectId = x.SubjectId,
                 NameSubject = x.Name,
-                Teacher = x.Professor.FullName
+                Teacher = x.Professor.FullName,
+                Credits = x.Credits
             }).ToListAsync();
             return data;
         }
@@ -103,7 +104,8 @@ namespace TCI.API.DataAccess.DataAccess.CRUD.Procesos.NroSolicitudDato
                 {
                     StudentSubjectId = ss.StudentSubjectId,
                     SubjectId = ss.Subject.SubjectId,
-                    NameSubjectId = ss.Subject.Name,
+                    NameSubjectId = ss.Subject.Name + " - " + ss.Subject.Professor.FullName,
+                    Credits = ss.Subject.Credits,
                     StudentId = ss.Student.StudentId,
                     NameStudentId = ss.Student.FullName,
                 })
